@@ -4,7 +4,7 @@ title: '#4471 split · three problems under one ticket'
 owner: Mason Terry
 status: open
 reviewed: 2026-10-28
-signature: Mason Terry
+signature: v1.eyJzdWIiOiI0Nzk4IiwiYXVkIjoiY2hhbGxlbmdlOndoYXQtaXQtc2hvd3MiLCJpYXQiOjE3OTMyNDIwMzEsImV4cCI6MTc5MzMyODQzMX0.PsO7kzLpiDFRHEuROfqw-QzDH7DwWhpPBCLp4N_PjJQ
 ---
 
 <script>
