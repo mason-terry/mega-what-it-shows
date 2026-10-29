@@ -1,6 +1,6 @@
-// The problems inside one merged ticket. causes.ts places a report by tenant and channel; a report
-// the desk read as a one-day move (desk-notes.json) is not a swap at all, so it gets its own problem
-// instead of a footnote under the cause it was filed by.
+// The problems inside one merged ticket, counted the desk's way: causes.ts places every report by
+// tenant and channel. A report the desk read as a one-day move (desk-notes.json) is a problem of its
+// own, but stays counted where it is filed, as CauseTable does; `alsoIn` says where.
 import { causeOf, uniqueById, type Report, type Tenant } from '#lib/kb/causes';
 
 export type Problem = 'parser' | 'hint' | 'one-day' | 'unplaced';
@@ -11,12 +11,9 @@ export type ProblemGroup = {
   tenants: number;
   firstSeen: string;
   lastSeen: string;
+  // For one-day: the causes its reports are also counted under.
+  alsoIn: Problem[];
 };
-
-export function problemOf(r: Report, t: Tenant | undefined, oneDayMove: readonly string[]): Problem {
-  if (oneDayMove.includes(r.id)) return 'one-day';
-  return causeOf(r, t) ?? 'unplaced';
-}
 
 export function splitTicket(
   all: Report[],
@@ -26,9 +23,10 @@ export function splitTicket(
 ): { merged: Report[]; groups: ProblemGroup[] } {
   const merged = uniqueById(all).filter((r) => r.mergedInto === ticket);
   const byProblem = new Map<Problem, Report[]>();
+  const add = (p: Problem, r: Report) => byProblem.set(p, [...(byProblem.get(p) ?? []), r]);
   for (const r of merged) {
-    const p = problemOf(r, tenantOf(r), oneDayMove);
-    byProblem.set(p, [...(byProblem.get(p) ?? []), r]);
+    add(causeOf(r, tenantOf(r)) ?? 'unplaced', r);
+    if (oneDayMove.includes(r.id)) add('one-day', r);
   }
   const groups = [...byProblem.entries()]
     .map(([problem, rs]) => {
@@ -39,6 +37,10 @@ export function splitTicket(
         tenants: new Set(rs.map((r) => r.tenant)).size,
         firstSeen: days[0],
         lastSeen: days[days.length - 1],
+        alsoIn:
+          problem === 'one-day'
+            ? [...new Set(rs.map((r) => (causeOf(r, tenantOf(r)) ?? 'unplaced') as Problem))]
+            : [],
       };
     })
     .sort((a, b) => b.reports.length - a.reports.length);

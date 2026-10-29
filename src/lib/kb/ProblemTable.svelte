@@ -34,6 +34,13 @@
   </tbody>
 </table>
 
+{#each split.groups as g (g.problem)}
+  {#if g.alsoIn.length}
+    <p class="note">The {g.reports.length} <code>{g.problem}</code> reports are also counted under <code>{g.alsoIn.join(', ')}</code>, where the desk filed them by tenant.</p>
+  {/if}
+{/each}
+
 <style>
   .sum { font-size: 1.1rem; }
+  .note { color: var(--muted); font-size: 0.85em; }
 </style>

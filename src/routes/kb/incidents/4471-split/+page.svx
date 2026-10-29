@@ -37,7 +37,8 @@ leaves the other two open with nobody on them.
 - **`one-day`**: the date moves by one day, not a swap. "Client in Lisbon got Tuesday. Client in Toronto got
   Monday." "The invite arrived before I made the booking." "Every booking in June is one day off."
   That reads as a time-zone problem: a date turned into an instant and back in another zone.
-  The desk had already noted these reports (`desk-notes.json`) and left them filed under `parser`.
+  The desk had already noted these reports (`desk-notes.json`). They stay counted under `parser`,
+  where they are filed, and have their own ticket too.
 
 ## How they got merged
 
