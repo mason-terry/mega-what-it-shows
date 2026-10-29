@@ -1,0 +1,54 @@
+---
+layout: runbook
+title: '#4471 split · three problems under one ticket'
+owner: Mason Terry
+status: open
+reviewed: 2026-10-28
+signature: Mason Terry
+---
+
+<script>
+  import ProblemTable from '#lib/kb/ProblemTable.svelte';
+  import Callout from '#lib/kb/Callout.svelte';
+  import RenderStamp from '#lib/kb/RenderStamp.svelte';
+
+  const repo = 'https://github.com/mason-terry/mega-what-it-shows/issues';
+  const links = { parser: `${repo}/1`, hint: `${repo}/2`, 'one-day': `${repo}/3` };
+</script>
+
+[#4471](/kb/incidents/4471) says one issue, one fix queued. Read the reports by who sent them and
+what they describe, and it is three problems. The parser fix closes only the first.
+
+<Callout kind="warn">
+Not one issue. Each problem below has its own ticket. Shipping the parser fix and closing #4471
+leaves the other two open with nobody on them.
+</Callout>
+
+## The problems
+
+<ProblemTable ticket={4471} {links} />
+
+- **`parser`**: the shared parser reads every date month first. A day-first tenant's dates come
+  out with day and month swapped, through the app, by email, and through `booking-v2`'s form. This is the bug #4471 describes.
+- **`hint`**: `booking-v3`'s form prints `MM/DD/YYYY` under its date field. People type what the hint
+  says, and the form reads it the tenant's way, day first. It only comes in through the form, only
+  from tenants on `booking-v3`. The parser fix does not touch it: the form needs a hint that
+  matches the tenant's locale.
+- **`one-day`**: the date moves by one day, not a swap. "Client in Lisbon got Tuesday. Client in Toronto got
+  Monday." "The invite arrived before I made the booking." "Every booking in June is one day off."
+  That reads as a time-zone problem: a date turned into an instant and back in another zone.
+  The desk had already noted these reports (`desk-notes.json`) and left them filed under `parser`.
+
+## How they got merged
+
+Every subject line in #4471 shows up under more than one problem. Dedupe matches on subject
+alone ([decision 0001](/kb/decisions/0001-dedupe-by-subject)), so it could never tell them apart.
+Intake's `hint` tag doesn't help either: it is a guess from the reporter's browser, not the tenant.
+
+## What changes for the desk
+
+- Count reports against the three tickets, not #4471.
+- A new date report: place it by tenant and channel (`causeOf` in `#lib/kb/causes`) before you
+  merge it. Read the body for a one-day move.
+
+<RenderStamp {signature} />
