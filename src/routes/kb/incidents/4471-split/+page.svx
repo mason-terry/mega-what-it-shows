@@ -20,8 +20,8 @@ signature: Mason Terry
 what they describe, and it is three problems. The parser fix closes only the first.
 
 <Callout kind="warn">
-Not one issue. Each problem below has its own ticket. Shipping the parser fix and closing #4471
-leaves the other two open with nobody on them.
+Not one issue. Each problem below has its own ticket. #4471 is closed, but closing it did not
+close the one-day problem: that ticket is still open.
 </Callout>
 
 ## The problems
@@ -39,6 +39,15 @@ leaves the other two open with nobody on them.
   That reads as a time-zone problem: a date turned into an instant and back in another zone.
   The desk had already noted these reports (`desk-notes.json`). They stay counted under `parser`,
   where they are filed, and have their own ticket too.
+
+## Where they stand
+
+Engineering closed #4471 on 5 October. That closes two of the three:
+
+- **`parser`**: fixed (`fix(dates): parse dd/mm for eu locales`). Ticket closed.
+- **`hint`**: won't fix; the `booking-v3` form is retired. Ticket closed as not planned.
+- **`one-day`**: no fix. The parser fix does not touch it. **Still open.** Route new one-day
+  reports to its ticket, not to #4471.
 
 ## How they got merged
 
